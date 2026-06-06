@@ -1,1 +1,0 @@
-# Design-Asset-Resizer
