@@ -93,9 +93,9 @@ export default function Home() {
     <div className="min-h-screen relative overflow-hidden transition-colors duration-200">
       
       {/* Ambient Animated Blobs for Glassmorphism depth */}
-      <div className="fixed top-0 -left-4 w-96 h-96 bg-blue-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob dark:mix-blend-screen pointer-events-none"></div>
-      <div className="fixed top-0 -right-4 w-96 h-96 bg-indigo-400 dark:bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 dark:mix-blend-screen pointer-events-none"></div>
-      <div className="fixed -bottom-8 left-20 w-96 h-96 bg-emerald-400 dark:bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 dark:mix-blend-screen pointer-events-none"></div>
+      <div className="fixed top-0 -left-4 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob dark:mix-blend-screen pointer-events-none"></div>
+      <div className="fixed top-0 -right-4 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 dark:mix-blend-screen pointer-events-none"></div>
+      <div className="fixed -bottom-8 left-20 w-96 h-96 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 dark:mix-blend-screen pointer-events-none"></div>
 
       <div className="relative z-10">
         {/* Header / Nav */}
@@ -142,20 +142,20 @@ export default function Home() {
             onDragOver={onDragOver}
             className={`border-2 border-dashed rounded-xl p-10 text-center transition-all duration-300 ${
               previewUrl 
-                ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/20" 
-                : "border-gray-300/50 dark:border-gray-600/50 hover:border-blue-400 hover:bg-white/5 dark:hover:bg-white/5"
+                ? "border-blue-500 bg-blue-50/50 dark:bg-blue-500/10" 
+                : "border-gray-300/50 dark:border-white/15 hover:border-blue-400 hover:bg-white/5 dark:hover:bg-white/10"
             }`}
           >
             {!previewUrl ? (
               <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="p-4 bg-blue-100 dark:bg-blue-900/50 rounded-full">
+                <div className="p-4 bg-blue-100 dark:bg-blue-500/20 rounded-full">
                   <UploadCloud className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <p className="text-lg font-medium text-slate-800 dark:text-slate-100">
                     {t("dragDropText")}
                   </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{t("fileLimitText")}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{t("fileLimitText")}</p>
                 </div>
                 <label className="mt-4 cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                   {t("browseFilesBtn")}
@@ -169,7 +169,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center space-y-6">
-                <div className="relative w-48 h-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-4 flex items-center justify-center">
+                <div className="relative w-48 h-48 bg-white dark:bg-slate-50 border border-gray-200 dark:border-slate-200 rounded-lg shadow-sm p-4 flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={previewUrl}
@@ -200,7 +200,7 @@ export default function Home() {
                           value={bgColor}
                           disabled={isTransparentBg}
                           onChange={(e) => setBgColor(e.target.value)}
-                          className={`h-8 w-14 rounded cursor-pointer border border-slate-300 dark:border-slate-600 p-0.5 bg-white dark:bg-slate-800 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
+                          className={`h-8 w-14 rounded cursor-pointer border border-slate-300 dark:border-slate-700 p-0.5 bg-white dark:bg-slate-900 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
                         />
                       </div>
                       <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800 dark:text-slate-200">
@@ -272,7 +272,7 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-gray-500"/> Favicons (Web)</h3>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-white/10 pb-2"><FileImage className="w-5 h-5 text-gray-500"/> Favicons (Web)</h3>
                 <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>favicon.ico</code> (16, 32, 48px)</li>
                   <li><code>favicon-16x16.png</code></li>
@@ -284,7 +284,7 @@ export default function Home() {
              </div>
 
              <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-blue-500"/> Social & OG</h3>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-white/10 pb-2"><FileImage className="w-5 h-5 text-blue-500"/> Social & OG</h3>
                 <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>og-image.png</code> (1200x630)</li>
                   <li><code>twitter-card.png</code> (1200x600)</li>
@@ -293,7 +293,7 @@ export default function Home() {
              </div>
 
              <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-green-500"/> Android</h3>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-white/10 pb-2"><FileImage className="w-5 h-5 text-green-500"/> Android</h3>
                 <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>mipmap-.../ic_launcher</code> (48-192)</li>
                   <li><code>playstore-icon.png</code> (512)</li>
@@ -301,16 +301,16 @@ export default function Home() {
              </div>
 
              <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-gray-800 dark:text-gray-300"/> iOS</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-white/10 pb-2"><FileImage className="w-5 h-5 text-gray-800 dark:text-gray-300"/> iOS</h3>
+                <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>icon-...@2x.png</code> & <code>@3x</code></li>
                   <li><code>appstore-icon.png</code> (1024)</li>
                 </ul>
              </div>
 
              <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-purple-500"/> PWA (Manifest)</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-white/10 pb-2"><FileImage className="w-5 h-5 text-purple-500"/> PWA (Manifest)</h3>
+                <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>icon-192.png</code></li>
                   <li><code>icon-512.png</code></li>
                   <li><code>maskable-icon-512.png</code></li>
@@ -327,7 +327,7 @@ export default function Home() {
         </div>
 
         {/* Donation / Support Section */}
-        <div className="mt-20 pt-10 border-t border-gray-200 dark:border-gray-800 text-center">
+         <div className="mt-20 pt-10 border-t border-slate-200 dark:border-white/10 text-center">
            <h2 className="text-2xl font-bold mb-4">{t("supportTitle")}</h2>
            <p className="text-slate-700 dark:text-slate-300 mb-8 max-w-xl mx-auto">
               {t("supportDesc")}
