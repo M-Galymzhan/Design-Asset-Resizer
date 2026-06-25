@@ -90,10 +90,16 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-200">
+    <div className="min-h-screen relative overflow-hidden transition-colors duration-200">
       
-      {/* Header / Nav */}
-      <header className="flex justify-end p-4 space-x-4 max-w-6xl mx-auto">
+      {/* Ambient Animated Blobs for Glassmorphism depth */}
+      <div className="fixed top-0 -left-4 w-96 h-96 bg-blue-400 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob dark:mix-blend-screen pointer-events-none"></div>
+      <div className="fixed top-0 -right-4 w-96 h-96 bg-indigo-400 dark:bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 dark:mix-blend-screen pointer-events-none"></div>
+      <div className="fixed -bottom-8 left-20 w-96 h-96 bg-emerald-400 dark:bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 dark:mix-blend-screen pointer-events-none"></div>
+
+      <div className="relative z-10">
+        {/* Header / Nav */}
+        <header className="flex justify-end p-4 space-x-4 max-w-6xl mx-auto">
         <button
           onClick={() => setLang(lang === "en" ? "ru" : "en")}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition flex items-center gap-2 text-sm font-medium"
@@ -103,7 +109,15 @@ export default function Home() {
           {lang.toUpperCase()}
         </button>
         <button
-          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          onClick={() => {
+            setTheme(resolvedTheme === "dark" ? "light" : "dark");
+            document.body.classList.remove("glitch-active");
+            void document.body.offsetWidth; // Force reflow to restart animation
+            document.body.classList.add("glitch-active");
+            setTimeout(() => {
+              document.body.classList.remove("glitch-active");
+            }, 500);
+          }}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition"
           title={t("themeToggle")}
         >
@@ -116,20 +130,20 @@ export default function Home() {
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">
             {t("title")}
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-700 dark:text-slate-300 max-w-2xl mx-auto">
             {t("subtitle")}
           </p>
         </div>
 
         {/* Upload Box */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 p-8 mb-12 transition-colors duration-200">
+        <div className="glass-panel rounded-2xl overflow-hidden p-8 mb-12 transition-all duration-300">
           <div
             onDrop={onDrop}
             onDragOver={onDragOver}
-            className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
+            className={`border-2 border-dashed rounded-xl p-10 text-center transition-all duration-300 ${
               previewUrl 
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
-                : "border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/20" 
+                : "border-gray-300/50 dark:border-gray-600/50 hover:border-blue-400 hover:bg-white/5 dark:hover:bg-white/5"
             }`}
           >
             {!previewUrl ? (
@@ -138,10 +152,10 @@ export default function Home() {
                   <UploadCloud className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-lg font-medium text-gray-700 dark:text-gray-200">
+                  <p className="text-lg font-medium text-slate-800 dark:text-slate-100">
                     {t("dragDropText")}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("fileLimitText")}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{t("fileLimitText")}</p>
                 </div>
                 <label className="mt-4 cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                   {t("browseFilesBtn")}
@@ -179,17 +193,17 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
                    <div className="flex flex-wrap items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <label htmlFor="bgColor" className={`text-sm font-medium whitespace-nowrap transition-opacity ${isTransparentBg ? "opacity-40" : "text-gray-700 dark:text-gray-300"}`}>{t("socialBgLabel")}</label>
+                        <label htmlFor="bgColor" className={`text-sm font-medium whitespace-nowrap transition-opacity ${isTransparentBg ? "opacity-40" : "text-slate-800 dark:text-slate-200"}`}>{t("socialBgLabel")}</label>
                         <input
                           type="color"
                           id="bgColor"
                           value={bgColor}
                           disabled={isTransparentBg}
                           onChange={(e) => setBgColor(e.target.value)}
-                          className={`h-8 w-14 rounded cursor-pointer border border-gray-300 dark:border-gray-600 p-0.5 bg-white dark:bg-gray-800 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
+                          className={`h-8 w-14 rounded cursor-pointer border border-slate-300 dark:border-slate-600 p-0.5 bg-white dark:bg-slate-800 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
                         />
                       </div>
-                      <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800 dark:text-slate-200">
                         <input
                           type="checkbox"
                           checked={isTransparentBg}
@@ -204,8 +218,8 @@ export default function Home() {
                       <button
                         onClick={handleGenerate}
                         disabled={status === "generating"}
-                        className={`inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all ${
-                          status === "generating" ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                        className={`inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 hover:scale-105 active:scale-95 ${
+                          status === "generating" ? "bg-blue-400 shadow-blue-400/30 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 shadow-blue-500/40"
                         }`}
                       >
                         {status === "generating" ? (
@@ -257,9 +271,9 @@ export default function Home() {
             <Info className="w-6 h-6 text-blue-500" /> {t("whatsInsideTitle")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-200">
+             <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-gray-500"/> Favicons (Web)</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>favicon.ico</code> (16, 32, 48px)</li>
                   <li><code>favicon-16x16.png</code></li>
                   <li><code>favicon-32x32.png</code></li>
@@ -269,24 +283,24 @@ export default function Home() {
                 </ul>
              </div>
 
-             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-200">
+             <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-blue-500"/> Social & OG</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>og-image.png</code> (1200x630)</li>
                   <li><code>twitter-card.png</code> (1200x600)</li>
                   <li><code>vk-share.png</code> (510x228)</li>
                 </ul>
              </div>
 
-             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-200">
+             <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-green-500"/> Android</h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-2">
                   <li><code>mipmap-.../ic_launcher</code> (48-192)</li>
                   <li><code>playstore-icon.png</code> (512)</li>
                 </ul>
              </div>
 
-             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-200">
+             <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-gray-800 dark:text-gray-300"/> iOS</h3>
                 <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
                   <li><code>icon-...@2x.png</code> & <code>@3x</code></li>
@@ -294,7 +308,7 @@ export default function Home() {
                 </ul>
              </div>
 
-             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-200">
+             <div className="glass-panel p-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 border-b dark:border-gray-700 pb-2"><FileImage className="w-5 h-5 text-purple-500"/> PWA (Manifest)</h3>
                 <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
                   <li><code>icon-192.png</code></li>
@@ -304,9 +318,10 @@ export default function Home() {
                 </ul>
              </div>
 
-             <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-100 dark:border-blue-800/50 shadow-sm flex flex-col justify-center items-center text-center transition-colors duration-200">
-                <h3 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-200">{t("readyToUseTitle")}</h3>
-                <p className="text-sm text-blue-700 dark:text-blue-300">{t("readyToUseDesc")}</p>
+             <div className="glass-panel p-6 rounded-xl flex flex-col justify-center items-center text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 pointer-events-none"></div>
+                <h3 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-200 relative z-10">{t("readyToUseTitle")}</h3>
+                <p className="text-sm text-blue-700 dark:text-blue-300 relative z-10">{t("readyToUseDesc")}</p>
              </div>
           </div>
         </div>
@@ -314,7 +329,7 @@ export default function Home() {
         {/* Donation / Support Section */}
         <div className="mt-20 pt-10 border-t border-gray-200 dark:border-gray-800 text-center">
            <h2 className="text-2xl font-bold mb-4">{t("supportTitle")}</h2>
-           <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto">
+           <p className="text-slate-700 dark:text-slate-300 mb-8 max-w-xl mx-auto">
               {t("supportDesc")}
            </p>
            
@@ -324,7 +339,7 @@ export default function Home() {
                 href="https://ko-fi.com/glmm1" 
                 target="_blank" 
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF5E5B] hover:bg-[#ff4542] text-white font-bold rounded-lg shadow-md transition-transform hover:scale-105"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF5E5B] hover:bg-[#ff4542] text-white font-bold rounded-lg shadow-lg shadow-[#FF5E5B]/40 transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <Coffee className="w-5 h-5" />
                 {t("kofiBtn")}
@@ -333,6 +348,7 @@ export default function Home() {
         </div>
         
       </main>
+      </div>
     </div>
   );
 }
