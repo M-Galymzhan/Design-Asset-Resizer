@@ -8,7 +8,7 @@
   <a href="README.md"><strong>English</strong></a> • <a href="README_ru.md">Русский</a>
 </p>
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.0.3-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.19-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0.0-blue?style=flat-square&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -47,12 +47,14 @@ Whether you need favicons, Android mipmap icons, iOS AppIcons, or social media O
 
 - **Single-Page Application**: Built with Next.js 15 App Router and styled with Tailwind CSS.
 - **Easy Uploads**: Support for a single SVG or PNG upload (up to 10MB).
-- **Comprehensive Output**: Generates a ZIP archive on the fly containing 35+ design assets across various formats and sizes:
+- **PWA & Offline-First**: Fully offline-capable using Service Workers. Installable as a standalone app on desktops and mobile devices (includes a dynamic manifest).
+- **Comprehensive Output**: Generates a ZIP archive on the fly containing 40+ design assets:
   - Favicons
   - Android mipmap
   - iOS AppIcons
-  - Social Media OG images
+  - Social Media OG images (in both PNG and WebP formats)
   - PWA icons
+- **Custom Resizing**: Enter any custom width & height to output tailored PNG and WebP assets dynamically.
 - **Smart Resizing**: Handles non-square aspect ratios cleanly by applying a 'contain' strategy to prevent image squishing.
 - **Custom Backgrounds**: Select an optional background color used specifically for opaque images (like Social/OG banners).
 - **Ready-to-Use Archive**: The generated ZIP includes a built-in `README.md` and `manifest.json`.
