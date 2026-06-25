@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { UploadCloud, CheckCircle, FileImage, Download, Loader2, Info, Moon, Sun, Languages, Coffee, QrCode } from "lucide-react";
+import { UploadCloud, CheckCircle, FileImage, Download, Loader2, Info, Moon, Sun, Languages, Coffee } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n";
 import { generateAllAssets } from "@/lib/imageProcessor";
 
 export default function Home() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const { lang, setLang, t } = useI18n();
   const [mounted, setMounted] = useState(false);
 
@@ -18,9 +18,17 @@ export default function Home() {
   const [status, setStatus] = useState<"idle" | "generating" | "done" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [progressMsg, setProgressMsg] = useState<string>("");
+  const [customWidth, setCustomWidth] = useState<number>(512);
+  const [customHeight, setCustomHeight] = useState<number>(512);
+  const [isCustomSize, setIsCustomSize] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js")
+        .then((reg) => console.log("SW registered:", reg))
+        .catch((err) => console.error("SW registration failed:", err));
+    }
   }, []);
 
   const handleFileChange = useCallback((selectedFile: File) => {
@@ -67,9 +75,14 @@ export default function Home() {
       // Simulate slight delay to allow UI to update to "generating" state
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      const blob = await generateAllAssets(file, isTransparentBg ? "transparent" : bgColor, (msg) => {
-        setProgressMsg(msg);
-      });
+      const blob = await generateAllAssets(
+        file,
+        isTransparentBg ? "transparent" : bgColor,
+        (msg) => {
+          setProgressMsg(msg);
+        },
+        { width: customWidth, height: customHeight, enabled: isCustomSize }
+      );
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -190,30 +203,67 @@ export default function Home() {
                   </button>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
-                   <div className="flex flex-wrap items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <label htmlFor="bgColor" className={`text-sm font-medium whitespace-nowrap transition-opacity ${isTransparentBg ? "opacity-40" : "text-slate-800 dark:text-slate-200"}`}>{t("socialBgLabel")}</label>
-                        <input
-                          type="color"
-                          id="bgColor"
-                          value={bgColor}
-                          disabled={isTransparentBg}
-                          onChange={(e) => setBgColor(e.target.value)}
-                          className={`h-8 w-14 rounded cursor-pointer border border-slate-300 dark:border-slate-700 p-0.5 bg-white dark:bg-slate-900 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
-                        />
+                 <div className="flex flex-col sm:flex-row items-center gap-6 w-full max-w-md">
+                   <div className="flex-1 flex flex-col gap-4 w-full">
+                      <div className="flex flex-wrap items-center gap-4">
+                         <div className="flex items-center gap-2">
+                           <label htmlFor="bgColor" className={`text-sm font-medium whitespace-nowrap transition-opacity ${isTransparentBg ? "opacity-40" : "text-slate-800 dark:text-slate-200"}`}>{t("socialBgLabel")}</label>
+                           <input
+                             type="color"
+                             id="bgColor"
+                             value={bgColor}
+                             disabled={isTransparentBg}
+                             onChange={(e) => setBgColor(e.target.value)}
+                             className={`h-8 w-14 rounded cursor-pointer border border-slate-300 dark:border-slate-700 p-0.5 bg-white dark:bg-slate-900 transition-opacity ${isTransparentBg ? "opacity-40 cursor-not-allowed" : ""}`}
+                           />
+                         </div>
+                         <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800 dark:text-slate-200">
+                           <input
+                             type="checkbox"
+                             checked={isTransparentBg}
+                             onChange={(e) => setIsTransparentBg(e.target.checked)}
+                             className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                           />
+                           {t("transparentBgLabel")}
+                         </label>
                       </div>
-                      <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800 dark:text-slate-200">
-                        <input
-                          type="checkbox"
-                          checked={isTransparentBg}
-                          onChange={(e) => setIsTransparentBg(e.target.checked)}
-                          className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4"
-                        />
-                        {t("transparentBgLabel")}
-                      </label>
+
+                      <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-slate-200/50 dark:border-white/10 w-full">
+                        <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-800 dark:text-slate-200">
+                          <input
+                            type="checkbox"
+                            checked={isCustomSize}
+                            onChange={(e) => setIsCustomSize(e.target.checked)}
+                            className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                          />
+                          {t("customSizeLabel")}
+                        </label>
+                        {isCustomSize && (
+                          <div className="flex items-center gap-2 transition-all duration-300">
+                            <input
+                              type="number"
+                              min="1"
+                              max="4000"
+                              placeholder={t("widthPlaceholder")}
+                              value={customWidth || ""}
+                              onChange={(e) => setCustomWidth(Math.max(1, parseInt(e.target.value) || 0))}
+                              className="w-16 px-2 py-0.5 text-sm border border-slate-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                            />
+                            <span className="text-slate-400">×</span>
+                            <input
+                              type="number"
+                              min="1"
+                              max="4000"
+                              placeholder={t("heightPlaceholder")}
+                              value={customHeight || ""}
+                              onChange={(e) => setCustomHeight(Math.max(1, parseInt(e.target.value) || 0))}
+                              className="w-16 px-2 py-0.5 text-sm border border-slate-300 dark:border-slate-700 rounded bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                            />
+                            <span className="text-xs text-slate-500">px</span>
+                          </div>
+                        )}
+                      </div>
                    </div>
-                   <div className="flex-1"></div>
                    <div className="flex flex-col w-full sm:w-auto">
                       <button
                         onClick={handleGenerate}

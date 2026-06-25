@@ -26,7 +26,7 @@ const canvasToBlob = (canvas: HTMLCanvasElement, type = "image/png"): Promise<Bl
 };
 
 // Generates an asset by drawing the image centered and contained
-const createAsset = async (img: HTMLImageElement, width: number, height: number, bgColor: string | null = null, paddingRatio = 0): Promise<Blob> => {
+const createAsset = async (img: HTMLImageElement, width: number, height: number, bgColor: string | null = null, paddingRatio = 0, mimeType = "image/png"): Promise<Blob> => {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -54,7 +54,7 @@ const createAsset = async (img: HTMLImageElement, width: number, height: number,
 
   ctx.drawImage(img, x, y, drawWidth, drawHeight);
 
-  return canvasToBlob(canvas);
+  return canvasToBlob(canvas, mimeType);
 };
 
 // Generates an ICO file containing multiple PNGs
@@ -102,7 +102,12 @@ const createIcoFromPngs = async (pngBlobs: Blob[]): Promise<Blob> => {
   return new Blob([icoBuffer], { type: "image/x-icon" });
 };
 
-export const generateAllAssets = async (file: File, bgColor: string, onProgress: (msg: string) => void): Promise<Blob> => {
+export const generateAllAssets = async (
+  file: File,
+  bgColor: string,
+  onProgress: (msg: string) => void,
+  customSize: { width: number; height: number; enabled: boolean } | null = null
+): Promise<Blob> => {
   onProgress("Loading image...");
   const img = await loadImage(file);
   
@@ -123,7 +128,7 @@ export const generateAllAssets = async (file: File, bgColor: string, onProgress:
   };
   zip.file("manifest.json", JSON.stringify(manifestJson, null, 2));
 
-  const readmeContent = `# Design Asset Resizer\n\nHere are your generated assets!\n\n## Structure\n- **favicons/**: Standard website favicons. Include \`favicon.ico\` in your root directory, and link the PNGs in your HTML \`<head>\`.\n- **social/**: Open Graph and Twitter card images. Use these in \`<meta property="og:image">\` and \`<meta name="twitter:image">\`.\n- **android/**: Android app icons (mipmap folders).\n- **ios/**: iOS App Store and home screen icons.\n- **pwa/**: Icons for Web App Manifest (PWA).\n\nEnjoy!`;
+  const readmeContent = `# Design Asset Resizer\n\nHere are your generated assets!\n\n## Structure\n- **favicons/**: Standard website favicons. Include \`favicon.ico\` in your root directory, and link the PNGs in your HTML \`<head>\`.\n- **social/**: Open Graph and Twitter card images (in PNG and WebP formats). Use these in \`<meta property="og:image">\` and \`<meta name="twitter:image">\`.\n- **android/**: Android app icons (mipmap folders).\n- **ios/**: iOS App Store and home screen icons.\n- **pwa/**: Icons for Web App Manifest (PWA).\n- **custom/**: Custom resized assets if requested.\n\nEnjoy!`;
   zip.file("README.md", readmeContent);
 
   // Favicons
@@ -150,8 +155,11 @@ export const generateAllAssets = async (file: File, bgColor: string, onProgress:
   socialGenerate: {
     const social = zip.folder("social");
     social?.file("og-image.png", await createAsset(img, 1200, 630, bgColor));
+    social?.file("og-image.webp", await createAsset(img, 1200, 630, bgColor, 0, "image/webp"));
     social?.file("twitter-card.png", await createAsset(img, 1200, 600, bgColor));
+    social?.file("twitter-card.webp", await createAsset(img, 1200, 600, bgColor, 0, "image/webp"));
     social?.file("vk-share.png", await createAsset(img, 510, 228, bgColor));
+    social?.file("vk-share.webp", await createAsset(img, 510, 228, bgColor, 0, "image/webp"));
   }
 
   // Android
@@ -190,6 +198,16 @@ export const generateAllAssets = async (file: File, bgColor: string, onProgress:
     pwa?.file("icon-192.png", await createAsset(img, 192, 192));
     pwa?.file("icon-512.png", await createAsset(img, 512, 512));
     pwa?.file("maskable-icon-512.png", await createAsset(img, 512, 512, null, 0.1)); // 10% padding
+  }
+
+  // Custom Size
+  if (customSize && customSize.enabled && customSize.width > 0 && customSize.height > 0) {
+    onProgress(`Generating custom asset (${customSize.width}x${customSize.height})...`);
+    const customFolder = zip.folder("custom");
+    const customPng = await createAsset(img, customSize.width, customSize.height, bgColor);
+    const customWebp = await createAsset(img, customSize.width, customSize.height, bgColor, 0, "image/webp");
+    customFolder?.file(`logo-${customSize.width}x${customSize.height}.png`, customPng);
+    customFolder?.file(`logo-${customSize.width}x${customSize.height}.webp`, customWebp);
   }
 
   onProgress("Zipping files...");

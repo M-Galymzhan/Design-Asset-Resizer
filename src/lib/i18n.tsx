@@ -26,6 +26,9 @@ const translations = {
     supportDesc: "If this tool saved you time, consider buying me a coffee! It helps keep the servers running.",
     kofiBtn: "Support on Ko-fi",
     themeToggle: "Toggle Theme",
+    customSizeLabel: "Custom size:",
+    widthPlaceholder: "Width",
+    heightPlaceholder: "Height",
   },
   ru: {
     title: "Генератор Ассетов",
@@ -48,6 +51,9 @@ const translations = {
     supportDesc: "Если этот инструмент сэкономил вам время, вы можете угостить меня кофе! Это помогает поддерживать работу сервиса.",
     kofiBtn: "Поддержать на Ko-fi",
     themeToggle: "Переключить тему",
+    customSizeLabel: "Свой размер:",
+    widthPlaceholder: "Ширина",
+    heightPlaceholder: "Высота",
   }
 };
 
