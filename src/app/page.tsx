@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { UploadCloud, CheckCircle, FileImage, Download, Loader2, Info, Moon, Sun, Languages, Coffee } from "lucide-react";
+import { UploadCloud, CheckCircle, FileImage, Download, Loader2, Info, Moon, Sun, Languages, Coffee, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n";
 import { generateAllAssets } from "@/lib/imageProcessor";
@@ -21,6 +21,7 @@ export default function Home() {
   const [customWidth, setCustomWidth] = useState<number>(512);
   const [customHeight, setCustomHeight] = useState<number>(512);
   const [isCustomSize, setIsCustomSize] = useState<boolean>(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -375,6 +376,126 @@ export default function Home() {
              </div>
           </div>
         </div>
+
+        {/* Dynamic JSON-LD Schema Markup */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "SoftwareApplication",
+                  "@id": "https://design-asset-resizer.vercel.app/#website",
+                  "url": "https://design-asset-resizer.vercel.app/",
+                  "name": t("title"),
+                  "applicationCategory": "DeveloperApplication",
+                  "operatingSystem": "All",
+                  "browserRequirements": "requires HTML5 Canvas API",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                  },
+                  "description": t("subtitle")
+                },
+                {
+                  "@type": "FAQPage",
+                  "@id": "https://design-asset-resizer.vercel.app/#faq",
+                  "mainEntity": [
+                    {
+                      "@type": "Question",
+                      "name": t("faqQ1"),
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": t("faqA1")
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": t("faqQ2"),
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": t("faqA2")
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": t("faqQ3"),
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": t("faqA3")
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": t("faqQ4"),
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": t("faqA4")
+                      }
+                    }
+                  ]
+                }
+              ]
+            })
+          }}
+        />
+
+        {/* SEO Text Block */}
+        <section className="mt-20 glass-panel p-8 rounded-2xl">
+          <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">
+            {t("seoHeading")}
+          </h2>
+          <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-sm md:text-base">
+            {t("seoIntro")}
+          </p>
+        </section>
+
+        {/* FAQ Accordion Section */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-center mb-8 text-slate-900 dark:text-slate-100">
+            {t("faqTitle")}
+          </h2>
+          <div className="space-y-4 max-w-3xl mx-auto">
+            {[
+              { q: t("faqQ1"), a: t("faqA1") },
+              { q: t("faqQ2"), a: t("faqA2") },
+              { q: t("faqQ3"), a: t("faqA3") },
+              { q: t("faqQ4"), a: t("faqA4") },
+            ].map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div 
+                  key={idx} 
+                  className="glass-panel rounded-xl overflow-hidden transition-all duration-300 border border-slate-200/50 dark:border-white/10"
+                >
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full flex justify-between items-center p-5 text-left font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors duration-200"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="pr-4">{faq.q}</span>
+                    <ChevronDown 
+                      className={`w-5 h-5 text-slate-500 flex-shrink-0 transition-transform duration-300 ${
+                        isOpen ? "transform rotate-180" : ""
+                      }`} 
+                    />
+                  </button>
+                  <div 
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      isOpen ? "max-h-96 border-t border-slate-200/30 dark:border-white/5" : "max-h-0"
+                    }`}
+                  >
+                    <p className="p-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Donation / Support Section */}
          <div className="mt-20 pt-10 border-t border-slate-200 dark:border-white/10 text-center">
