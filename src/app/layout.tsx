@@ -21,6 +21,10 @@ export const metadata: Metadata = {
     description: "Generate 35+ essential design assets from a single logo upload.",
     type: "website",
   },
+  verification: {
+    google: "nBx0GzmBVShlot-mQstVXw77mBRJ1eCBGgCYkDNrMDE",
+    yandex: "d5c4feabfb637be7",
+  },
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";
